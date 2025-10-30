@@ -1,0 +1,180 @@
+/* Google Fonts: Add this to public/index.html
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+*/
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
+}
+
+/* 🔥 HERO HEADER */
+.hero-header {
+  background: linear-gradient(to right, #007bff, #0056b3);
+  color: white;
+  text-align: center;
+  padding: 50px 20px 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.hero-header::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: white;
+  border-radius: 4px;
+}
+
+.hero-content h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  letter-spacing: -0.5px;
+}
+
+.hero-content p {
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0;
+  color: #f1f1f1;
+}
+
+/* 🗂 CATEGORY TABS */
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.category-tabs button {
+  background: #f1f3f5;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.category-tabs button:hover {
+  background: #dee2e6;
+}
+
+.category-tabs .active {
+  background-color: #007bff;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* 📰 ARTICLE GRID */
+.article-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* 📄 ARTICLE CARD (can be in ArticleCard.css too) */
+.article-card {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+  max-width: 350px;
+}
+
+.article-card:hover {
+  transform: translateY(-6px);
+}
+
+.thumbnail-wrapper img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  background-color: #f0f0f0;
+}
+
+.article-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.article-content h3 {
+  font-size: 17px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #222;
+}
+
+.article-content p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.article-content a {
+  margin-top: auto;
+  text-decoration: none;
+  color: #007bff;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.article-content a:hover {
+  color: #0056b3;
+}
+
+/* 📄 PAGINATION */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.05);
+}
+
+.pagination button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.pagination button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 14px;
+  font-weight: 500;
+}

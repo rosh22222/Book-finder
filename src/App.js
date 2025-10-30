@@ -18,21 +18,25 @@ export default function App() {
   const [showScroll, setShowScroll] = useState(false);
   const [initialView, setInitialView] = useState(true);
 
+  // 🩵 Load favorites
   useEffect(() => {
     const saved = localStorage.getItem("favorites");
     if (saved) setFavorites(JSON.parse(saved));
   }, []);
 
+  // 💾 Save favorites
   useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
+  // 🌀 Scroll button
   useEffect(() => {
     const handleScroll = () => setShowScroll(window.scrollY > 300);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // 🪶 Load featured books
   useEffect(() => {
     fetchFeaturedBooks();
   }, []);
@@ -42,7 +46,7 @@ export default function App() {
     try {
       const topics = ["harry potter", "lord of the rings", "pride and prejudice"];
       const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-      const res = await fetch(`${BASE_URL}?title=${randomTopic}&limit=21`);
+      const res = await fetch(`${BASE_URL}?title=${randomTopic}&limit=20`);
       const data = await res.json();
       setFeaturedBooks(data.docs || []);
     } catch {
@@ -53,16 +57,16 @@ export default function App() {
   };
 
   const searchBooks = async (term) => {
-    if (!term) return;
+    if (!term.trim()) return;
     setLoading(true);
     setError("");
     setInitialView(false);
     try {
-      const res = await fetch(`${BASE_URL}?title=${encodeURIComponent(term)}&limit=30`);
+      const res = await fetch(`${BASE_URL}?q=${encodeURIComponent(term)}&limit=30`);
       const data = await res.json();
       setBooks(data.docs || []);
     } catch {
-      setError("Something went wrong.");
+      setError("Error fetching data. Try again.");
     } finally {
       setLoading(false);
     }
@@ -115,26 +119,20 @@ export default function App() {
         style={{
           backgroundImage: darkMode
             ? "linear-gradient(-45deg, #0f172a, #1e293b, #334155, #0f172a)"
-            : "linear-gradient(-45deg, #a7f3d0, #93c5fd, #bfdbfe, #a7f3d0)",
+            : "linear-gradient(-45deg, #14b8a6, #60a5fa, #a5b4fc, #14b8a6)",
           backgroundSize: "300% 300%",
         }}
       ></motion.div>
 
-      {/* Floating Animated Circles */}
+      {/* Floating Circles */}
       <motion.div
         className="absolute w-72 h-72 bg-teal-400/30 rounded-full blur-3xl -top-16 -left-16"
-        animate={{
-          y: [0, 20, 0],
-          x: [0, 10, 0],
-        }}
+        animate={{ y: [0, 20, 0], x: [0, 10, 0] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
       ></motion.div>
       <motion.div
         className="absolute w-96 h-96 bg-indigo-400/30 rounded-full blur-3xl bottom-0 right-0"
-        animate={{
-          y: [0, -30, 0],
-          x: [0, -20, 0],
-        }}
+        animate={{ y: [0, -30, 0], x: [0, -20, 0] }}
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
       ></motion.div>
 
@@ -142,7 +140,7 @@ export default function App() {
         {/* Navbar */}
         <motion.header
           className={`flex justify-between items-center backdrop-blur-md rounded-2xl p-4 mb-8 shadow-lg border ${
-            darkMode ? "bg-gray-800/50 border-gray-700" : "bg-white/60 border-gray-200"
+            darkMode ? "bg-gray-800/50 border-gray-700" : "bg-white/70 border-gray-200"
           }`}
           initial={{ y: -60, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -155,7 +153,7 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Favorites Button */}
+            {/* Favorites */}
             <div className="relative">
               <button
                 onClick={() =>
@@ -163,7 +161,7 @@ export default function App() {
                 }
                 className="text-2xl hover:scale-110 transition-transform"
               >
-                💖
+                ♥️
               </button>
               {favorites.length > 0 && (
                 <span className="absolute -top-1 -right-2 bg-teal-500 text-white text-xs px-2 py-0.5 rounded-full">
@@ -172,12 +170,12 @@ export default function App() {
               )}
             </div>
 
-            {/* Dark Mode Toggle */}
+            {/* Dark Mode */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setDarkMode(!darkMode)}
               className={`p-2 rounded-full border ${
-                darkMode ? "bg-yellow-400" : "bg-gray-100"
+                darkMode ? "bg-yellow-400" : "bg-gray-200"
               }`}
             >
               {darkMode ? "🌞" : "🌙"}
@@ -186,13 +184,20 @@ export default function App() {
         </motion.header>
 
         {/* Search */}
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 mb-6 justify-center">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col sm:flex-row gap-3 mb-6 justify-center"
+        >
           <input
             type="text"
             placeholder="Search books..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 border border-gray-300 rounded-xl px-4 py-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
+            className={`flex-1 rounded-xl px-4 py-3 shadow-sm border text-base font-medium ${
+              darkMode
+                ? "bg-gray-800 text-gray-100 border-gray-700 focus:ring-2 focus:ring-teal-400"
+                : "bg-white text-gray-800 border-gray-300 focus:ring-2 focus:ring-teal-500"
+            }`}
           />
           <button
             type="submit"
@@ -220,7 +225,7 @@ export default function App() {
           />
         </div>
 
-        {/* Heading */}
+        {/* Results */}
         {!loading && (
           <h2 className="text-2xl font-bold mb-4 text-center">
             {initialView ? "📖 Featured Books" : "🔍 Search Results"}
@@ -234,7 +239,7 @@ export default function App() {
               {filteredBooks.map((book) => (
                 <motion.div
                   key={book.key}
-                  whileHover={{ scale: 1.04 }}
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
                   className={`rounded-2xl p-4 shadow-lg border backdrop-blur-md cursor-pointer ${
                     darkMode ? "bg-gray-800/70 border-gray-700" : "bg-white/70 border-gray-200"
@@ -253,15 +258,19 @@ export default function App() {
                     </div>
                   )}
                   <h2 className="text-lg font-semibold">{book.title}</h2>
-                  <p className="text-sm text-gray-500">{book.author_name?.join(", ") || "Unknown"}</p>
-                  <p className="text-xs mt-1 text-gray-400">{book.first_publish_year || "N/A"}</p>
+                  <p className="text-sm text-gray-500">
+                    {book.author_name?.join(", ") || "Unknown"}
+                  </p>
+                  <p className="text-xs mt-1 text-gray-400">
+                    {book.first_publish_year || "N/A"}
+                  </p>
                 </motion.div>
               ))}
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Loading Spinner */}
+        {/* Loading */}
         {loading && (
           <div className="flex justify-center py-10">
             <motion.div
@@ -271,6 +280,66 @@ export default function App() {
             />
           </div>
         )}
+
+        {/* Book Modal */}
+        <AnimatePresence>
+          {selectedBook && (
+            <motion.div
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedBook(null)}
+            >
+              <motion.div
+                className={`p-6 rounded-2xl max-w-md w-11/12 ${
+                  darkMode ? "bg-gray-800" : "bg-white"
+                }`}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {selectedBook.cover_i && (
+                  <img
+                    src={`https://covers.openlibrary.org/b/id/${selectedBook.cover_i}-L.jpg`}
+                    alt={selectedBook.title}
+                    className="w-full h-72 object-cover rounded-lg mb-3"
+                  />
+                )}
+                <h2 className="text-2xl font-bold mb-2">{selectedBook.title}</h2>
+                <p className="text-sm mb-1">
+                  👨‍💼 <strong>Author:</strong>{" "}
+                  {selectedBook.author_name?.join(", ") || "Unknown"}
+                </p>
+                <p className="text-sm mb-1">
+                  🗓️ <strong>Year:</strong> {selectedBook.first_publish_year || "N/A"}
+                </p>
+                <p className="text-sm mb-3">
+                  🏷️ <strong>Edition:</strong> {selectedBook.edition_count || 0}
+                </p>
+                <div className="flex justify-between mt-4">
+                  <button
+                    onClick={() => toggleFavorite(selectedBook)}
+                    className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700"
+                  >
+                    {favorites.some((b) => b.key === selectedBook.key)
+                      ? "🤍 Remove Favorite"
+                      : "♥️ Add Favorite"}
+                  </button>
+                  <a
+                    href={`https://openlibrary.org${selectedBook.key}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+                  >
+                    View More
+                  </a>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Scroll to top */}
         {showScroll && (
@@ -284,8 +353,13 @@ export default function App() {
         )}
 
         <footer className="text-center text-xs mt-16 text-gray-400">
-          Data by{" "}
-          <a href="https://openlibrary.org" target="_blank" rel="noreferrer" className="text-teal-600 hover:underline">
+          Data from{" "}
+          <a
+            href="https://openlibrary.org"
+            target="_blank"
+            rel="noreferrer"
+            className="text-teal-500 hover:underline"
+          >
             OpenLibrary.org
           </a>
         </footer>
@@ -293,3 +367,4 @@ export default function App() {
     </div>
   );
 }
+
